@@ -47,3 +47,7 @@ entity Status {
     key code : String(3);
         name : String(50);
 }
+
+entity LeaveRequests {
+    
+}
