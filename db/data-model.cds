@@ -48,6 +48,33 @@ entity Status {
         name : String(50);
 }
 
-entity LeaveRequests {
-    
+entity LeaveRequests : cuid, managed {
+    employee  : Association to Employees;
+    leaveType : Association to LeaveTypes;
+    startDate : Date;
+    endDate   : Date;
+    reason    : String(255);
+    status    : Association to LeaveStatus;
+}
+
+entity LeaveTypes {
+    key code : String(3);
+        name : String(50);
+}
+
+entity LeaveStatus {
+    key code : String(3);
+        name : String(50);
+}
+
+entity Attendance : cuid, managed {
+    employee : Association to Employees;
+    date     : Date;
+    status   : Association to AttendanceStatus;
+    remark   : String(255);
+}
+
+entity AttendanceStatus {
+    key code : String(3);
+        name : String(50);
 }
