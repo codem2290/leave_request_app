@@ -1,1 +1,7 @@
 code,name
+APP,Approved
+PEN,Pending
+REJ,Rejected
+CAN,Canceled
+SUB,Submitted
+HLD,On Hold

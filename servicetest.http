@@ -1,0 +1,20 @@
+### Read Department Data
+GET http://localhost:4004/odata/v4/employee-model/Departments
+
+### Create New Department
+POST http://localhost:4004/odata/v4/employee-model/Departments
+Content-Type: application/json
+
+{
+    "code": "COL",
+    "name": "Consluting"
+}
+
+### Update Department 
+PUT http://localhost:4004/odata/v4/employee-model/Departments(code='COL')
+Content-Type: application/json
+
+{
+    "code": "COL",
+    "name": "Software Consluting"
+}

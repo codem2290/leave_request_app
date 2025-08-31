@@ -1,3 +1,4 @@
+
 using {leave.request.app as model} from '../db/data-model';
 
 service EmployeeModelService {
@@ -8,4 +9,11 @@ service EmployeeModelService {
     entity FamilyMembers    as projection on model.FamilyMembers;
     entity Attendance       as projection on model.Attendance;
     entity AttendanceStatus as projection on model.Attendance;
+    entity LeaveRequest     as projection on model.LeaveRequests;
+    entity LeaveTypes       as projection on model.LeaveTypes;
+    entity LeaveStatus      as projection on model.LeaveStatus;
+}
+
+annotate EmployeeModelService.LeaveRequest with {
+
 }
