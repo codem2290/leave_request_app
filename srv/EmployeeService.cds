@@ -1,4 +1,3 @@
-
 using {leave.request.app as model} from '../db/data-model';
 
 service EmployeeModelService {
@@ -12,6 +11,9 @@ service EmployeeModelService {
     entity LeaveRequest     as projection on model.LeaveRequests;
     entity LeaveTypes       as projection on model.LeaveTypes;
     entity LeaveStatus      as projection on model.LeaveStatus;
+
+    action submitLeaveRequest(leaveRequestID: String) returns String;
+
 }
 
 annotate EmployeeModelService.LeaveRequest with {

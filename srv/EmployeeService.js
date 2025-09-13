@@ -2,7 +2,7 @@ const cds = require('@sap/cds');
 class EmployeeModelService extends cds.ApplicationService {
     init() {
         const { LeaveRequest } = this.entities;
-
+        const db = cds.connect.to('db');
         this.before('UPDATE', LeaveRequest.drafts, async (req) => {
             if (req.data?.startDate || req.data?.endDate) {
                 let startDate = req.data?.startDate;
@@ -29,7 +29,7 @@ class EmployeeModelService extends cds.ApplicationService {
                         status: 400,
                         code: 'MISSING_INPUT',
                         message: 'Past dates are not allowed',
-                        target: 'startDate',
+                        target: 'endDate',
                     });
                 }
 
@@ -56,6 +56,23 @@ class EmployeeModelService extends cds.ApplicationService {
             // Add 1 if you want to include both start & end dates
             return diffInDays + 1;
         }
+
+        this.on("submitLeaveRequest", async (req) => {
+            if(req.data.leaveRequestID){
+                let ID = req.data.leaveRequestID;
+                let tx = cds.tx();
+                let updateStatus = await tx.run(UPDATE(LeaveRequest, ID).with({
+                    status_code: 'SUB'
+                }));
+                await tx.commit();
+                if(!updateStatus){
+                    req.error(400, "Failed to Submit Request");
+                }
+
+                return req.info(200, "Request submitted successfully!");
+            }
+        });
+
 
         return super.init();
     }

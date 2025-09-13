@@ -62,11 +62,6 @@ annotate service.LeaveRequest with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : status.name,
-                Label : 'Status',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : noOfDays,
                 Label : '{i18n>TotalDays}',
             },
@@ -75,14 +70,19 @@ annotate service.LeaveRequest with @(
     UI.HeaderFacets : [
         {
             $Type : 'UI.ReferenceFacet',
-            ID : 'firstName',
-            Target : 'employee/@UI.DataPoint#firstName',
+            ID : 'name',
+            Target : 'status/@UI.DataPoint#name',
         },
     ],
     UI.HeaderInfo: {
        TypeNamePlural: 'Leaves',
         TypeName : '',
-    }
+    },
+    UI.DataPoint #status_code : {
+        $Type : 'UI.DataPointType',
+        Value : status_code,
+        Title : 'status_code',
+    },
 );
 
 annotate service.LeaveRequest with {
@@ -113,4 +113,13 @@ annotate service.LeaveRequest with @(Common.SideEffects #updateNoOfDays: {
     SourceProperties: ['endDate', 'startDate'],
     TargetProperties: ['noOfDays']
 });
+
+annotate service.LeaveStatus with @(
+    UI.DataPoint #name : {
+        $Type : 'UI.DataPointType',
+        Value : name,
+        Title : 'Status',
+        Criticality : statusColor,
+    }
+);
 

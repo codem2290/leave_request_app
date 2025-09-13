@@ -1,7 +1,7 @@
-code,name
-APP,Approved
-PEN,Pending
-REJ,Rejected
-CAN,Canceled
-SUB,Submitted
-HLD,On Hold
+code,name,statusColor
+APP,Approved,3
+PEN,Pending,2
+REJ,Rejected,1
+CAN,Canceled,1
+SUB,Submitted,5
+HLD,On Hold,2

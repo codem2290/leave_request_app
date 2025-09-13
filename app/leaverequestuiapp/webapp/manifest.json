@@ -131,7 +131,19 @@
               "contextPath": "/LeaveRequest",
               "content": {
                 "header": {
-                  "visible": true
+                  "visible": true,
+                  "actions": {
+                    "statusUpdateBtn": {
+                      "press": "com.leave.app.leaverequestuiapp.ext.controller.SubmitLeaveRequest.submitLeaveRequest",
+                      "visible": "com.leave.app.leaverequestuiapp.ext.controller.SubmitLeaveRequest.hideShowButton",
+                      "enabled": true,
+                      "text": "Submit",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "EditAction"
+                      }
+                    }
+                  }
                 }
               }
             }

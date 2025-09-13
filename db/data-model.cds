@@ -51,8 +51,8 @@ entity Status {
 entity LeaveRequests : cuid, managed {
     employee  : Association to Employees;
     leaveType : Association to LeaveTypes;
-    startDate : Date        @title: '{i18n>startDate}';
-    endDate   : Date        @title: '{i18n>endDate}';
+    startDate : Date        @title: '{i18n>startDate}' default $now;
+    endDate   : Date        @title: '{i18n>endDate}' default $now;
     reason    : String(255) @title: '{i18n>reason}';
     status    : Association to LeaveStatus default 'PEN';
     noOfDays  : Integer;
@@ -66,6 +66,7 @@ entity LeaveTypes {
 entity LeaveStatus {
     key code : String(3);
         name : String(50);
+        statusColor: Integer;
 }
 
 entity Attendance : cuid, managed {
