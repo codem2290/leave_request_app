@@ -18,3 +18,35 @@ Content-Type: application/json
     "code": "COL",
     "name": "Software Consluting"
 }
+
+
+
+
+1. Connect BTP Subaccount with S4 Hana System - Use cloud Connector
+2. Expose Data source through cloud connector
+3. Create Destination in BTP Cockpit under subaccount
+4. Import edmx file in CAP Project - "cds import <file path of EDMX file>"
+5. Modify Data source Details in Package.json file 
+
+"CustomerS4API": {
+        "kind": "odata-v2",
+        "model": "srv/external/CustomerS4API",
+        "credentials": {
+          "destination": "s4hana",
+          "path": "/sap/opu/odata/SAP/ZCUSTOMERSERVICE_SRV/"
+        }
+      }
+
+6. Expose Entity in Service layer 
+7. Add handler this.on('READ') make sure to connect with Data Source
+8. create .env file in root folder and mention below code 
+
+destinations=[{"name":"s4hana","proxyHost":"http://127.0.0.1","proxyPort":"8887","url":"http://s4hana.dest"}]
+
+9. Create Destination and Connectivity Service instance through Terminal. Use below commands
+cf cs destination lite s4hana
+cf csk s4hana service_key
+cds bind -2 s4hana:service_key
+cf cs connectivity lite s4hana_connect
+cf csk s4hana_connect service_key
+cds bind -2 s4hana_connect:service_key

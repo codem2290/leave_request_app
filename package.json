@@ -7,7 +7,10 @@
   "private": true,
   "dependencies": {
     "@sap/cds": "^9",
-    "express": "^4"
+    "express": "^4",
+    "@sap-cloud-sdk/connectivity": "^3",
+    "@sap-cloud-sdk/http-client": "^3",
+    "@sap-cloud-sdk/resilience": "^3"
   },
   "engines": {
     "node": ">=20"
@@ -26,6 +29,14 @@
         "kind": "sqlite",
         "credentials": {
           "database": "my.db"
+        }
+      },
+      "CustomerS4API": {
+        "kind": "odata-v2",
+        "model": "srv/external/CustomerS4API",
+        "credentials": {
+          "destination": "s4hana",
+          "path": "/sap/opu/odata/SAP/ZCUSTOMERSERVICE_SRV/"
         }
       }
     }

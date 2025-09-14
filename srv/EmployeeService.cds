@@ -1,5 +1,7 @@
 using {leave.request.app as model} from '../db/data-model';
 
+using {CustomerS4API as externalservice } from './external/CustomerS4API';
+
 service EmployeeModelService {
     entity Employees        as projection on model.Employees;
     entity Departments      as projection on model.Departments;
@@ -13,6 +15,8 @@ service EmployeeModelService {
     entity LeaveStatus      as projection on model.LeaveStatus;
 
     action submitLeaveRequest(leaveRequestID: String) returns String;
+
+    entity CustomerSet as projection on externalservice.CustomerSet;
 
 }
 

@@ -1,8 +1,15 @@
 const cds = require('@sap/cds');
 class EmployeeModelService extends cds.ApplicationService {
-    init() {
-        const { LeaveRequest } = this.entities;
+    async init() {
+        const { LeaveRequest, CustomerSet } = this.entities;
         const db = cds.connect.to('db');
+        const s4system = await cds.connect.to('CustomerS4API');
+
+
+        this.on('READ', CustomerSet, async (req) => {
+            return s4system.run(req.query);
+        });
+
         this.before('UPDATE', LeaveRequest.drafts, async (req) => {
             if (req.data?.startDate || req.data?.endDate) {
                 let startDate = req.data?.startDate;
