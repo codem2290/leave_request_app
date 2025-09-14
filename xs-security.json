@@ -1,0 +1,31 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.LeaveAppManager",
+      "description": "LeaveAppManager"
+    },
+    {
+      "name": "$XSAPPNAME.LeaveAppEmployee",
+      "description": "LeaveAppEmployee"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "LeaveAppManager",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.LeaveAppManager"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "LeaveAppEmployee",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.LeaveAppEmployee"
+      ],
+      "attribute-references": []
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+_schema-version: 3.3.0
+ID: leave_request_app
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: leave_request_app-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: leave_request_app-auth
+      - name: leave_request_app-db
+      - name: leave_request_app-destination
+
+  - name: leave_request_app-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: leave_request_app-db
+
+  - name: leave_request_app-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: leave_request_app-auth
+      - name: srv-api
+      - name: leave_request_app-html5-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: leave_request_appleaverequestuiapp
+          artifacts:
+            - leaverequestuiapp.zip
+          target-path: app/
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: srv-api
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: ui5
+                URL: https://ui5.sap.com
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+
+  - name: leave_request_appleaverequestuiapp
+    type: html5
+    path: app/leaverequestuiapp
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: leave_request_app-destinations
+    type: com.sap.application.content
+    requires:
+      - name: leave_request_app-auth
+        parameters:
+          service-key:
+            name: leave_request_app-auth-key
+      - name: leave_request_app-html5-repo-host
+        parameters:
+          service-key:
+            name: leave_request_app-html5-repo-host-key
+      - name: srv-api
+      - name: leave_request_app-destination
+        parameters:
+          content-target: true
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: leave_request_app-html5-repository
+              ServiceInstanceName: leave_request_app-html5-repo-host
+              ServiceKeyName: leave_request_app-html5-repo-host-key
+              sap.cloud.service: leave_request_app.service
+            - Name: leave_request_app-auth
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: leave_request_app-auth
+              ServiceKeyName: leave_request_app-auth-key
+              sap.cloud.service: leave_request_app.service
+
+resources:
+  - name: leave_request_app-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: leave_request_app-${org}-${space}
+        tenant-mode: dedicated
+        role-collections:
+          - name: 'LeaveAppManager (leave_request_app ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.LeaveAppManager'
+          - name: 'LeaveAppEmployee (leave_request_app ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.LeaveAppEmployee'
+  - name: leave_request_app-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: leave_request_app-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: srv-api
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+
+  - name: leave_request_app-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: leave_request_app-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

@@ -56,6 +56,7 @@ entity LeaveRequests : cuid, managed {
     reason    : String(255) @title: '{i18n>reason}';
     status    : Association to LeaveStatus default 'PEN';
     noOfDays  : Integer;
+    relationship: String;
 }
 
 entity LeaveTypes {

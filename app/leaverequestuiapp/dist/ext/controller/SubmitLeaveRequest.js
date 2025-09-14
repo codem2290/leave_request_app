@@ -1,0 +1,2 @@
+sap.ui.define(["sap/m/MessageToast"],function(e){"use strict";return{submitLeaveRequest:function(e){var t=e.getObject().ID;var i="submitLeaveRequest";var s={model:this.getModel(),parameterValues:[{name:"leaveRequestID",value:t}],skipParameterDialog:true};this.editFlow.invokeAction(i,s).then(function(e){if(e){this._controller.getExtensionAPI().refresh()}}.bind(this))},hideShowButton:function(e){if(e?.getObject().status.code==="PEN"&&e?.getObject().IsActiveEntity===true){return true}else{return false}}}});
+//# sourceMappingURL=SubmitLeaveRequest.js.map
